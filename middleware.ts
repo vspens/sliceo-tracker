@@ -11,7 +11,7 @@ function isAuthPath(pathname: string) {
 }
 
 export async function middleware(request: NextRequest) {
-  const response = NextResponse.next({
+  let response = NextResponse.next({
     request: {
       headers: request.headers,
     },
@@ -29,6 +29,13 @@ export async function middleware(request: NextRequest) {
         return request.cookies.getAll();
       },
       setAll(cookiesToSet) {
+        // Recreate the response whenever Supabase needs to set auth cookies.
+        // This matches Supabase SSR guidance so refreshed tokens survive.
+        response = NextResponse.next({
+          request: {
+            headers: request.headers,
+          },
+        });
         cookiesToSet.forEach(({ name, value, options }) => {
           request.cookies.set(name, value);
           response.cookies.set(name, value, options);
@@ -49,7 +56,11 @@ export async function middleware(request: NextRequest) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/login";
     loginUrl.searchParams.set("next", pathname);
-    return NextResponse.redirect(loginUrl);
+    const redirectResponse = NextResponse.redirect(loginUrl);
+    response.cookies.getAll().forEach((cookie) => {
+      redirectResponse.cookies.set(cookie);
+    });
+    return redirectResponse;
   }
 
   if (user && onAuthPage) {
@@ -57,7 +68,11 @@ export async function middleware(request: NextRequest) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = target;
     redirectUrl.search = "";
-    return NextResponse.redirect(redirectUrl);
+    const redirectResponse = NextResponse.redirect(redirectUrl);
+    response.cookies.getAll().forEach((cookie) => {
+      redirectResponse.cookies.set(cookie);
+    });
+    return redirectResponse;
   }
 
   return response;
