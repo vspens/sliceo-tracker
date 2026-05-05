@@ -45,12 +45,14 @@ export default function DashboardLayout({
             ))}
           </nav>
           <div className="mt-auto border-t border-slate-200 pt-4">
-            <Link
-              href="/logout"
-              className="block rounded-lg border border-slate-300 bg-white px-3 py-2 text-center text-sm font-medium text-slate-700 hover:bg-slate-50"
-            >
-              Logout
-            </Link>
+            <form action="/logout" method="post">
+              <button
+                type="submit"
+                className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-center text-sm font-medium text-slate-700 hover:bg-slate-50"
+              >
+                Logout
+              </button>
+            </form>
           </div>
         </aside>
         <div className="min-w-0 flex-1">{children}</div>
