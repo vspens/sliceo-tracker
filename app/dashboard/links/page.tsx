@@ -176,12 +176,6 @@ export default async function LinksPage({
             + Create tracking link
           </Link>
           <Link
-            href="/dashboard/links?modal=partner"
-            className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
-          >
-            + Add partner destination
-          </Link>
-          <Link
             href="/dashboard/partners"
             className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
           >
